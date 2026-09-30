@@ -1,25 +1,26 @@
 # esp32-greenhouse
 
-Greenhouse controller on ESP32: soil moisture, air temperature and humidity, light, a pump and a fan, with a web dashboard served by the board itself.
+Контроллер теплицы на ESP32: влажность почвы, температура и влажность воздуха, освещённость,
+насос и вентилятор, веб-панель прямо с платы.
 
 ![](docs/sch_sheet.jpg)
 
-## Hardware
+## Железо
 
-- ESP32-WROOM-32, DHT22 air sensor, capacitive soil moisture sensor on ADC1
-- pump driven from a GPIO through a switching stage, status LED
-- 12 V input with fuse and reverse-polarity diode SS34, MP1584 buck to 5 V, AMS1117 LDO to 3.3 V
-- the schematic is generated from code with schemdraw (`hardware/schematic.py`), so the drawing always matches the pin map in the firmware
+- ESP32-WROOM-32, датчик воздуха DHT22, ёмкостный датчик влажности почвы на ADC1
+- насос управляется с GPIO через ключевой каскад, светодиод состояния
+- вход 12 В с предохранителем и защитой от переполюсовки на SS34, понижающий MP1584 до 5 В, LDO AMS1117 до 3,3 В
+- схема генерируется из кода через schemdraw (`hardware/schematic.py`), поэтому чертёж всегда совпадает с распиновкой в прошивке
 
 ![](docs/sch_detail.jpg)
 
-## Firmware
+## Прошивка
 
-- non-blocking loop on `millis()` timers
-- watering with a hard safety limit: the pump never runs longer than 60 s and then rests for 15 minutes, even if the soil sensor fails
-- dry and wet thresholds calibrated from the web page and stored in NVS (`Preferences`), they survive a power loss
-- built-in web server with live readings and settings, MQTT publishing for Home Assistant or Node-RED
+- неблокирующий цикл на таймерах `millis()`
+- полив с жёстким ограничением: насос никогда не работает дольше 60 с и потом отдыхает 15 минут, даже если датчик почвы отказал
+- пороги «сухо» и «влажно» калибруются с веб-страницы и хранятся в NVS (`Preferences`), переживают пропадание питания
+- встроенный веб-сервер с текущими показаниями и настройками, публикация в MQTT для Home Assistant или Node-RED
 
 ![](docs/fw_code.jpg)
 
-Build with Arduino IDE or PlatformIO, board `esp32dev`.
+Сборка в Arduino IDE или PlatformIO, плата `esp32dev`.
